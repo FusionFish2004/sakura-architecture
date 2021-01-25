@@ -1,8 +1,10 @@
 package cn.sakuratown.jeremyhu.sakuraarchitecture.blueprint;
 
 import cn.sakuratown.jeremyhu.sakuraarchitecture.selection.Selection;
+import cn.sakuratown.jeremyhu.sakuraarchitecture.utils.WorldUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -87,5 +89,9 @@ public class Blueprint {
 
         itemStack.setItemMeta(itemMeta);
         return itemStack;
+    }
+
+    public void preview(Player player){
+        World previewWorld = WorldUtil.getPreviewWorld();
     }
 }

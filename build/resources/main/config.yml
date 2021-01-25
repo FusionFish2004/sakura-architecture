@@ -11,4 +11,8 @@ selection:
     - END_PORTAL
     - END_PORTAL_FRAME
     - CHAIN_COMMAND_BLOCK
+    - MOB_SPAWNER
 preview-world:
+messages:
+  first-point-selection: "First point selected."
+  second-point-selection: "Second point selected."
