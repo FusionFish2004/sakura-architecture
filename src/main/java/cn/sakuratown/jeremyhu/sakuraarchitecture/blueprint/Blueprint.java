@@ -1,9 +1,8 @@
 package cn.sakuratown.jeremyhu.sakuraarchitecture.blueprint;
 
 import cn.sakuratown.jeremyhu.sakuraarchitecture.selection.Selection;
-import cn.sakuratown.jeremyhu.sakuraarchitecture.utils.KeyUtil;
-import com.comphenix.protocol.events.PacketContainer;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -12,8 +11,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.UUID;
 
-import static cn.sakuratown.jeremyhu.sakuraarchitecture.utils.KeyUtil.CREATOR;
-import static cn.sakuratown.jeremyhu.sakuraarchitecture.utils.KeyUtil.NAME;
+import static cn.sakuratown.jeremyhu.sakuraarchitecture.utils.KeyUtil.*;
 
 public class Blueprint {
 
@@ -62,12 +60,32 @@ public class Blueprint {
 
         String name = container.get(NAME, PersistentDataType.STRING);
         Player creator = Bukkit.getPlayer(UUID.fromString(container.get(CREATOR, PersistentDataType.STRING)));
-        String uuid = container.get(KeyUtil.UUID, PersistentDataType.STRING);
+        String uuid = container.get(BLUEPRINT_UUID, PersistentDataType.STRING);
 
         return BlueprintBuilder.of(Blueprint::new)
                 .with(Blueprint::setName, name)
                 .with(Blueprint::setCreator, creator)
                 .with(Blueprint::setUuid, uuid)
                 .build();
+    }
+
+    public ItemStack getItem(){
+        Material material = Material.getMaterial(PLUGIN.getConfig().getString("blueprint.default-material"));
+        if (material == null) material = Material.PAPER;
+        ItemStack itemStack = new ItemStack(material);
+        ItemMeta itemMeta = itemStack.getItemMeta();
+
+        String name = PLUGIN.getConfig().getString("blueprint.default-name");
+        itemMeta.setDisplayName(name);
+
+        String creator = getCreator().getUniqueId().toString();
+        String uuid = getUuid();
+
+        PersistentDataContainer container = itemMeta.getPersistentDataContainer();
+        container.set(CREATOR, PersistentDataType.STRING, creator);
+        container.set(BLUEPRINT_UUID, PersistentDataType.STRING, uuid);
+
+        itemStack.setItemMeta(itemMeta);
+        return itemStack;
     }
 }

@@ -1,0 +1,14 @@
+blueprint:
+  default-material: PAPER
+  default-name: 建筑蓝图
+selection:
+  max-x: 300
+  max-y: 300
+  max-z: 300
+  banned-materials:
+    - BARRIER
+    - BEDROCK
+    - END_PORTAL
+    - END_PORTAL_FRAME
+    - CHAIN_COMMAND_BLOCK
+preview-world:

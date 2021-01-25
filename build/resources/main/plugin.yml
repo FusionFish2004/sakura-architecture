@@ -1,0 +1,10 @@
+name: SakuraArchitecture
+main: cn.sakuratown.jeremyhu.sakuraarchitecture.Main
+version: 1.0
+author: JeremyHu
+api-version: 1.16
+
+commands:
+  sa:
+    description: "测试指令"
+    usage: /sa select

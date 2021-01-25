@@ -2,12 +2,14 @@ package cn.sakuratown.jeremyhu.sakuraarchitecture.selection;
 
 import com.google.common.collect.Maps;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.util.Vector;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class Selection {
 
@@ -64,18 +66,37 @@ public class Selection {
         Vector start = getStartPoint();
         Vector end = getEndPoint();
 
-        for (int x = start.getBlockX(); x < end.getBlockX(); x++){
-            for (int y = start.getBlockY(); y < end.getBlockY(); y++){
-                for (int z = start.getBlockZ(); z < end.getBlockZ(); z++){
+        for (int x = start.getBlockX(); x <= end.getBlockX(); x++){
+            for (int y = start.getBlockY(); y <= end.getBlockY(); y++){
+                for (int z = start.getBlockZ(); z <= end.getBlockZ(); z++){
                     Location location = new Location(world,x,y,z);
                     Block block = world.getBlockAt(location);
                     Vector vector = new Vector(x - start.getBlockX(), y - start.getBlockY(), z - start.getBlockZ());
+                    //Vector vector = new Vector(x, y, z);
                     this.blockDataMap.put(vector,block.getBlockData());
                 }
             }
         }
-
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Selection selection = (Selection) o;
+        return world.equals(selection.world) && getStartPoint().equals(selection.getStartPoint()) && getEndPoint().equals(selection.getEndPoint());
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(world, getStartPoint(), getEndPoint());
+    }
+
+    public void test(){
+        blockDataMap.keySet().forEach(vector -> {
+            Location location = vector.toLocation(world);
+            Block block = world.getBlockAt(location);
+            block.setType(Material.DIAMOND_BLOCK);
+        });
+    }
 }
