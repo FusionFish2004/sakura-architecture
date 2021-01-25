@@ -1,5 +1,6 @@
 package cn.sakuratown.jeremyhu.sakuraarchitecture;
 
+import cn.sakuratown.jeremyhu.sakuraarchitecture.commands.MainCommandExecuter;
 import cn.sakuratown.jeremyhu.sakuraarchitecture.listeners.PlayerInteractListener;
 import cn.sakuratown.jeremyhu.sakuraarchitecture.selection.Selection;
 import cn.sakuratown.jeremyhu.sakuraarchitecture.utils.ConfigUtil;
@@ -27,7 +28,7 @@ public class Main extends JavaPlugin {
     public void onEnable(){
 
         ConfigUtil.initConfig(this);
-        Bukkit.getPluginCommand("sa").setExecutor(this);
+        Bukkit.getPluginCommand("sa").setExecutor(new MainCommandExecuter());
         getPreviewWorld();
 
         Bukkit.getPluginManager().registerEvents(new PlayerInteractListener(), this);
