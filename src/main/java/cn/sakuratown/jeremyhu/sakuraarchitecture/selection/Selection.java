@@ -1,25 +1,22 @@
 package cn.sakuratown.jeremyhu.sakuraarchitecture.selection;
 
+import com.google.common.collect.Maps;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.util.Vector;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 public class Selection {
 
-    private Map<Vector, BlockData> blockDataMap = new HashMap<>();
+    private final Map<Vector, BlockData> blockDataMap = Maps.newHashMap();
     private World world;
     private Location start;
     private Location end;
 
     public Selection(Location start, Location end) {
-
         this.select(start, end);
     }
 
@@ -77,10 +74,6 @@ public class Selection {
                 }
             }
         }
-
-
-
-
 
     }
 
