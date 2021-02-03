@@ -2,45 +2,95 @@ package cn.sakuratown.jeremyhu.sakuraarchitecture.selection;
 
 import cn.sakuratown.jeremyhu.sakuraarchitecture.utils.ConfigUtil;
 import com.google.common.collect.Maps;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static cn.sakuratown.jeremyhu.sakuraarchitecture.utils.KeyUtil.PLUGIN;
+import static cn.sakuratown.jeremyhu.sakuraarchitecture.utils.ParticleUtil.drawParticle;
 
 /**
  * 选区类
  * @author JeremyHu
  */
 
-public class Selection extends LinkedHashMap<Vector, BlockData>{
+public class Selection extends LinkedHashMap<Vector, BlockData> {
 
-    private World world;
-    private Location start;
-    private Location end;
+    private transient World world;
+    private transient Location start;
+    private transient Location end;
+    private transient boolean selecting = false;
+    private transient BukkitRunnable runnable;
+    private transient final Selection self = this;
 
     public Selection() {
+        runnable = new BukkitRunnable() {
+            @Override
+            public void run() {
+                if(selecting){
+                    drawParticle(self);
+                }
+            }
+        };
+        runnable.runTaskTimer(PLUGIN,0L,5L);
+    }
 
+    public void build(Location origin){
+        World world = origin.getWorld();
+        LinkedHashMap<Location, BlockData> actualMap = Maps.newLinkedHashMap();
+
+        for (Vector vector : this.keySet()){
+            Location location = origin.clone().add(vector);
+            BlockData blockData = this.get(vector);
+            actualMap.put(location,blockData);
+        }
+
+        actualMap.keySet().forEach(location -> {
+            Block block = world.getBlockAt(location);
+            block.setBlockData(actualMap.get(location));
+        });
+    }
+
+    public boolean isSelecting() {
+        return selecting;
+    }
+
+    public void setSelecting(boolean selecting) {
+        this.selecting = selecting;
     }
 
     public void setStart(Location start) {
         this.start = start;
         world = start.getWorld();
+        PLUGIN.getLogger().info(start.toString());
     }
 
     public void setEnd(Location end) {
         this.end = end;
         world = end.getWorld();
+        PLUGIN.getLogger().info(end.toString());
     }
 
 
 
     public Selection(Location start, Location end) {
         this.select(start, end);
+    }
+
+    public World getWorld() {
+        return world;
     }
 
     public void select(Location start, Location end){
@@ -57,6 +107,7 @@ public class Selection extends LinkedHashMap<Vector, BlockData>{
         this.start = start;
         this.end = end;
         this.world = start.getWorld();
+
     }
 
     public int getSize(){
@@ -101,7 +152,7 @@ public class Selection extends LinkedHashMap<Vector, BlockData>{
 
     public LinkedHashMap<Vector, BlockData> getBlocks(){
 
-        this.clear();
+        super.clear();
 
         Vector start = getStartPoint();
         Vector end = getEndPoint();
@@ -118,7 +169,34 @@ public class Selection extends LinkedHashMap<Vector, BlockData>{
             }
         }
 
+        this.selecting = true;
+
         return this;
+    }
+
+    public Map<Material, Integer> getMaterials(){
+        Map<Material, Integer> materialMap = Maps.newHashMap();
+        /*
+        Set<Material> materials = getNonAirBlocks().values()
+                .stream()
+                .map(BlockData::getMaterial)
+                .collect(Collectors.toSet());
+        //转换为set自动删除重复元素
+         */
+
+        getNonAirBlocks().values().forEach(blockData -> {
+            materialMap.merge(blockData.getMaterial(), 1, Integer::sum);
+        });
+        return materialMap;
+
+    }
+
+    @Override
+    public void clear(){
+        super.clear();
+        this.selecting = false;
+        this.start = null;
+        this.end = null;
     }
 
     private boolean isSelectable(){
@@ -148,10 +226,10 @@ public class Selection extends LinkedHashMap<Vector, BlockData>{
     }
 
     public void test(){
-        this.keySet().forEach(vector -> {
-            Location location = vector.toLocation(world);
-            Block block = world.getBlockAt(location);
-            block.setType(Material.DIAMOND_BLOCK);
-        });
+        Gson gson = new GsonBuilder().enableComplexMapKeySerialization().create();
+        String json = this.toString();
+        PLUGIN.getLogger().info(json);
     }
+
+
 }

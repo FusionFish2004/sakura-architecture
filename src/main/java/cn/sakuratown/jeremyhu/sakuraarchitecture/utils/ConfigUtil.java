@@ -64,4 +64,16 @@ public class ConfigUtil {
     public static String getSecondSelectionMessage(){
         return CONFIG.getString("messages.second-point-selection");
     }
+
+    public static String getSelectedMessage(){
+        return CONFIG.getString("messages.section-selected");
+    }
+
+    public static String getSelectionClearMessage(){
+        return CONFIG.getString("messages.selection-cleared");
+    }
+
+    public static String getMaterialListRaw(){
+        return CONFIG.getString("messages.material-list");
+    }
 }

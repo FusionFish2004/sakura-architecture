@@ -14,5 +14,8 @@ selection:
     - MOB_SPAWNER
 preview-world:
 messages:
-  first-point-selection: "First point selected."
-  second-point-selection: "Second point selected."
+  first-point-selection: First point selected.
+  second-point-selection: Second point selected.
+  section-selected: Section selected.
+  selection-cleared: Selection cleared.
+  material-list: "%MATERIAL x %AMOUNT"
